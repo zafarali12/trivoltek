@@ -1,0 +1,20 @@
+
+.proc{padding:120px 0;background:var(--surface)}
+.proc__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:56px}
+.proc__card{
+  padding:28px;border-radius:16px;
+  background:var(--black);border:1px solid var(--border);
+  transition:border-color .3s,transform .3s;
+}
+.proc__card:hover{border-color:rgba(255,255,255,.18);transform:translateY(-4px)}
+.proc__top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.proc__icon{
+  width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  border-radius:10px;border:1px solid var(--border2);
+  background:rgba(255,255,255,.04);color:var(--grey);
+}
+.proc__num{font-size:11px;font-weight:700;color:var(--grey2)}
+.proc__title{font-size:1rem;font-weight:700;color:#fff;letter-spacing:-.02em;margin-bottom:10px}
+.proc__desc{font-size:.875rem;color:var(--grey);line-height:1.72}
+@media(max-width:900px){.proc__grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.proc__grid{grid-template-columns:1fr}}

@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* =========================================================================
+     OFFICIAL STITCH DESIGN SYSTEM TOKENS (TRIVOLTEK ENTERPRISE)
+     ========================================================================= */
+  --color-primary: #06162a;             /* Deep Obsidian Blue */
+  --color-primary-container: #1c2b3f;   /* Obsidian Blue Brand Container */
+  --color-primary-fixed: #d4e3fe;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #8392ab;
+
+  --color-secondary: #20b2aa;           /* Arctic Teal */
+  --color-secondary-dark: #006a65;
+  --color-secondary-container: #76f3ea;
+  --color-secondary-fixed: #79f6ed;
+  --color-on-secondary: #06162a;
+  --color-on-secondary-fixed: #00201e;
+
+  --color-surface: #fcf9ee;             /* Soft Sand Light Canvas */
+  --color-surface-dim: #dddacf;
+  --color-surface-bright: #fcf9ee;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f7f4e9;
+  --color-surface-container: #f1eee3;
+  --color-surface-container-high: #ebe8dd;
+  --color-surface-container-highest: #e5e2d8;
+  --color-surface-variant: #e5e2d8;
+
+  --color-on-surface: #1c1c15;
+  --color-on-surface-variant: #44474c;
+  --color-outline: #75777d;
+  --color-outline-variant: #c4c6cd;
+
+  --color-tertiary: #0b1720;            /* Slate Gray / Deep */
+  --color-tertiary-container: #202c35;
+  --color-on-tertiary-container: #87939e;
+  --color-slate: #606c76;
+
+  --font-headline: "Space Grotesk", -apple-system, sans-serif;
+  --font-body: "Hanken Grotesk", -apple-system, sans-serif;
+  --font-code: "Space Grotesk", monospace;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  --container-max-width: 1280px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface-container);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+.container-stitch {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+@media (min-width: 1024px) {
+  .container-stitch {
+    padding: 0 48px;
+  }
+}
+
+/* Material Symbols alignment */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* Buttons */
+.btn-stitch-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 8px;
+  background-color: var(--color-secondary);
+  color: #06162a;
+  font-family: var(--font-headline);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 4px 12px rgba(32, 178, 170, 0.25);
+  transition: all 0.25s ease;
+}
+.btn-stitch-primary:hover {
+  background-color: #1aa39c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(32, 178, 170, 0.4);
+}
+
+.btn-stitch-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 8px;
+  background-color: var(--color-surface-container-lowest);
+  color: var(--color-primary);
+  font-family: var(--font-headline);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid rgba(6, 22, 42, 0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease;
+}
+.btn-stitch-secondary:hover {
+  background-color: var(--color-surface-container);
+  border-color: rgba(6, 22, 42, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Cards */
+.stitch-card {
+  background-color: var(--color-surface-container-lowest);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(6, 22, 42, 0.05);
+}
+.stitch-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(6, 22, 42, 0.08);
+  border-color: rgba(32, 178, 170, 0.3);
+}
+
+/* Featured Obsidian Card */
+.stitch-card-featured {
+  background-color: var(--color-primary-container);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 16px 32px rgba(6, 22, 42, 0.25);
+  border: 1px solid rgba(32, 178, 170, 0.3);
+  position: relative;
+  overflow: hidden;
+}

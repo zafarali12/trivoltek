@@ -57,6 +57,11 @@
   --container-max-width: 1280px;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -68,6 +73,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
+}
+
+/* Prevent any section from causing horizontal scroll */
+section, header, footer, main {
+  max-width: 100%;
   overflow-x: hidden;
 }
 

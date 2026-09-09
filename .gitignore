@@ -28,3 +28,8 @@ mcp_config.json
 .agents/
 stitch_design.html
 stitch_screen.json
+
+# Environment Variables (API keys - never commit!)
+.env
+.env.local
+.env.*.local

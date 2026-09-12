@@ -1,423 +1,236 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useEffect, useState } from "react";
+import Navbar from "./Navbar";
 
-export default function Hero({ onOpenDemo }) {
+const ACCENT = "#15BCDF";
+const ACCENT_HOVER = "#3fd0ef";
+const ACCENT_BORDER = "#0fa3c2";
+
+// ─── Video autoplay hook ──────────────────────────────────────────────────
+function useAutoplayVideo(ref) {
+  useEffect(() => {
+    const video = ref.current;
+    if (!video) return;
+
+    let interval = null;
+
+    const tryPlay = () => {
+      video.muted = true;
+      video.play()
+        .then(() => {
+          if (interval) { clearInterval(interval); interval = null; }
+        })
+        .catch(() => {});
+    };
+
+    tryPlay();
+
+    if (video.paused) {
+      interval = setInterval(() => {
+        if (!video.paused) { clearInterval(interval); interval = null; return; }
+        tryPlay();
+      }, 1200);
+    }
+
+    const onInteraction = () => {
+      video.muted = true;
+      video.play().catch(() => {});
+    };
+
+    document.addEventListener("click", onInteraction, { once: true });
+    document.addEventListener("touchstart", onInteraction, { once: true });
+
+    return () => {
+      if (interval) clearInterval(interval);
+      document.removeEventListener("click", onInteraction);
+      document.removeEventListener("touchstart", onInteraction);
+    };
+  }, [ref]);
+}
+
+// ─── CTA Button ───────────────────────────────────────────────────────────
+function CTAButton({ children }) {
+  const [hovered, setHovered] = useState(false);
   return (
-    <section
+    <button
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
-        position: "relative",
-        width: "100%",
-        overflow: "hidden",
-        backgroundColor: "var(--color-surface)",
-        paddingTop: "128px",
-        paddingBottom: "80px",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 14,
+        background: hovered ? ACCENT_HOVER : ACCENT,
+        border: `1px solid ${ACCENT_BORDER}`,
+        color: "#1a1c1e",
+        fontFamily: "'Quantico', 'Arial Narrow', sans-serif",
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.14em",
+        padding: "18px 34px",
+        fontSize: "clamp(13px, 2.2vw, 16px)",
+        clipPath:
+          "polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px))",
+        boxShadow: hovered
+          ? "0 0 0 1px rgba(21,188,223,0.5), 0 14px 40px -12px rgba(15,163,194,0.8)"
+          : "0 0 0 1px rgba(21,188,223,0.35), 0 10px 30px -12px rgba(15,163,194,0.6)",
+        cursor: "pointer",
+        transition: "background 0.2s ease, box-shadow 0.2s ease",
+        lineHeight: 1,
       }}
     >
-      {/* Subtle Ambient Background Gradients */}
-      <div
+      {children}
+      <span
         style={{
-          position: "absolute",
-          inset: 0,
-          pointerEvents: "none",
-          opacity: 0.35,
-          backgroundImage: "radial-gradient(#20B2AA 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
+          display: "inline-block",
+          width: 22,
+          height: 1,
+          backgroundColor: "#1a1c1e",
+          flexShrink: 0,
         }}
       />
-      <motion.div
-        animate={{
-          scale: [1, 1.15, 1],
-          opacity: [0.1, 0.18, 0.1],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+    </button>
+  );
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────
+export default function Hero({ onOpenDemo }) {
+  const videoRef = useRef(null);
+  useAutoplayVideo(videoRef);
+
+  return (
+    <section
+      className="hero-section"
+      style={{
+        position: "relative",
+        minHeight: "100svh",
+        backgroundColor: "#F2F1F0",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {/* ── Background Video ─────────────────────────────── */}
+      <video
+        ref={videoRef}
+        className="hero-video"
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260823_050407_500d0339-ab28-41c1-9688-132a74a3b5aa.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
         style={{
           position: "absolute",
-          top: "-120px",
-          right: "40px",
-          width: "440px",
-          height: "440px",
-          backgroundColor: "rgba(32, 178, 170, 0.16)",
-          borderRadius: "50%",
-          filter: "blur(80px)",
+          top: 0,
+          height: "auto",
+          objectFit: "contain",
           pointerEvents: "none",
-        }}
-      />
-      <motion.div
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.06, 0.12, 0.06],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1,
-        }}
-        style={{
-          position: "absolute",
-          top: "45%",
-          left: "-80px",
-          width: "380px",
-          height: "380px",
-          backgroundColor: "rgba(28, 43, 63, 0.1)",
-          borderRadius: "50%",
-          filter: "blur(70px)",
-          pointerEvents: "none",
+          zIndex: 0,
+          willChange: "transform",
         }}
       />
 
-      <div className="container-stitch" style={{ position: "relative", zIndex: 1 }}>
-        {/* Status Indicator */}
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "28px",
-          }}
-        >
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "6px 14px",
-              borderRadius: "8px",
-              backgroundColor: "rgba(32, 178, 170, 0.12)",
-              color: "#006a65",
-              fontFamily: "var(--font-headline)",
-              fontSize: "12px",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-            }}
-          >
-            <motion.span
-              animate={{ opacity: [1, 0.4, 1] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-              style={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                backgroundColor: "#20B2AA",
-                display: "inline-block",
-              }}
-            />
-            AI SaaS · Web &amp; Mobile Apps
-          </span>
+      {/* ── Desktop scrim (CSS-only) ──────────────────────── */}
+      <div className="hero-scrim" />
 
-          <span style={{ color: "var(--color-outline)", fontSize: "14px" }}>/</span>
+      {/* ── Content Layer ──────────────────────────────────── */}
+      <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", flex: 1 }}>
+        {/* Navbar */}
+        <Navbar onOpenDemo={onOpenDemo} />
 
-          <span
-            style={{
-              color: "var(--color-on-surface-variant)",
-              fontFamily: "var(--font-headline)",
-              fontSize: "12px",
-              fontWeight: 600,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-            }}
-          >
-            AI Automation · Bug Fixing · SEO Building
-          </span>
-        </motion.div>
+        {/* Headline */}
+        <h1 className="hero-h1">
+          <span style={{ display: "block" }}>SCALING</span>
+          <span style={{ display: "block" }}>THE</span>
+          <span style={{ display: "block" }}>PLATFORM</span>
+          <span className="hero-indent" style={{ display: "block" }}>FOR</span>
+          <span className="hero-indent" style={{ display: "block" }}>YOUR</span>
+          <span className="hero-indent hero-accent" style={{ display: "block" }}>BUSINESS</span>
+        </h1>
 
-        {/* Hero Grid: Typography + Matched Photography Showcase */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr",
-            gap: "48px",
-            alignItems: "stretch",
-          }}
-          className="stitch-hero-grid"
-        >
-          {/* Left Column: Heading, Messaging & Specs */}
-          <motion.div
-            initial={{ opacity: 0, x: -24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              height: "100%",
-            }}
-          >
-            <div>
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                style={{
-                  fontFamily: "var(--font-headline)",
-                  fontSize: "clamp(2.3rem, 4.2vw, 3.4rem)",
-                  fontWeight: 800,
-                  color: "var(--color-primary)",
-                  lineHeight: 1.15,
-                  letterSpacing: "-0.03em",
-                  marginBottom: "20px",
-                }}
-              >
-                Powering Digital Growth Through High-Impact{" "}
-                <span
-                  style={{
-                    color: "var(--color-secondary)",
-                    textDecoration: "underline",
-                    textDecorationColor: "#76f3ea",
-                    textDecorationThickness: "5px",
-                    textUnderlineOffset: "8px",
-                  }}
-                >
-                  AI &amp; Software
-                </span>{" "}
-                Solutions.
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-                style={{
-                  fontSize: "clamp(1rem, 1.4vw, 1.12rem)",
-                  color: "var(--color-on-surface-variant)",
-                  lineHeight: 1.65,
-                  maxWidth: "540px",
-                  marginBottom: "32px",
-                }}
-              >
-                TRIVOLTEK builds elite AI SaaS products, custom websites, high-performance mobile
-                applications, intelligent AI automations, and rock-solid SEO architectures engineered
-                to scale your business.
-              </motion.p>
-
-              {/* Action Buttons with Spring Micro-interactions */}
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  alignItems: "center",
-                  gap: "16px",
-                  marginBottom: "36px",
-                }}
-              >
-                <motion.a
-                  href="#innovations"
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="btn-stitch-primary"
-                >
-                  <span>Explore Services</span>
-                  <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>
-                    arrow_forward
-                  </span>
-                </motion.a>
-
-                <motion.a
-                  href="#contact"
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="btn-stitch-secondary"
-                  style={{ textDecoration: "none" }}
-                >
-                  <span
-                    className="material-symbols-outlined"
-                    style={{
-                      color: "var(--color-secondary)",
-                      fontSize: "20px",
-                    }}
-                  >
-                    mail
-                  </span>
-                  <span>Get in Touch</span>
-                </motion.a>
-              </motion.div>
-            </div>
-
-            {/* Micro Specs pinned to bottom of left column */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "28px",
-                paddingTop: "24px",
-                borderTop: "1px solid var(--color-surface-container-high)",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-headline)",
-                    fontSize: "24px",
-                    fontWeight: 700,
-                    color: "var(--color-primary)",
-                  }}
-                >
-                  99+
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-headline)",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                    color: "var(--color-on-surface-variant)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                  }}
-                >
-                  Core Web Vitals
-                </div>
-              </div>
-
-              <div style={{ width: "1px", height: "32px", backgroundColor: "var(--color-surface-variant)" }} />
-
-              <div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-headline)",
-                    fontSize: "24px",
-                    fontWeight: 700,
-                    color: "var(--color-primary)",
-                  }}
-                >
-                  &lt;100ms
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-headline)",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                    color: "var(--color-on-surface-variant)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                  }}
-                >
-                  SaaS Response
-                </div>
-              </div>
-
-              <div style={{ width: "1px", height: "32px", backgroundColor: "var(--color-surface-variant)" }} />
-
-              <div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-headline)",
-                    fontSize: "24px",
-                    fontWeight: 700,
-                    color: "var(--color-secondary)",
-                  }}
-                >
-                  100%
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-headline)",
-                    fontSize: "12px",
-                    fontWeight: 600,
-                    color: "var(--color-on-surface-variant)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                  }}
-                >
-                  Bug-Free SLA
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* Right Column: Matched 1:1 Equal Width & Height with Entry Animation */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              position: "relative",
-              height: "100%",
-              minHeight: "440px",
-              display: "flex",
-            }}
-          >
-            {/* Subtle glow behind the image frame */}
-            <motion.div
-              animate={{
-                scale: [1, 1.06, 1],
-                opacity: [0.16, 0.24, 0.16],
-              }}
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              style={{
-                position: "absolute",
-                top: "10%",
-                right: "-3%",
-                width: "90%",
-                height: "80%",
-                backgroundColor: "rgba(32, 178, 170, 0.2)",
-                borderRadius: "28px",
-                filter: "blur(60px)",
-                zIndex: 0,
-                pointerEvents: "none",
-              }}
-            />
-
-            {/* Premium Image Card matching Left Column Height & Width */}
-            <motion.div
-              whileHover={{ y: -4 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              style={{
-                position: "relative",
-                zIndex: 1,
-                width: "100%",
-                height: "100%",
-                borderRadius: "20px",
-                overflow: "hidden",
-                boxShadow: "0 24px 50px -12px rgba(6, 22, 42, 0.16), 0 0 0 1px rgba(6, 22, 42, 0.06)",
-                backgroundColor: "#ffffff",
-                display: "flex",
-              }}
-            >
-              <img
-                src="/hero-team.jpg"
-                alt="Trivoltek Software Engineers & AI Architects"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  minHeight: "100%",
-                  display: "block",
-                  objectFit: "cover",
-                  objectPosition: "center 20%",
-                  transition: "transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.02)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-              />
-            </motion.div>
-          </motion.div>
+        {/* CTA */}
+        <div className="hero-cta-wrap">
+          <CTAButton>GET STARTED</CTAButton>
         </div>
       </div>
 
+      {/* ── CSS Media Queries ─────────────────────────────── */}
       <style>{`
-        @media (min-width: 1024px) {
-          .stitch-hero-grid {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 48px !important;
-            align-items: stretch !important;
+        /* ── Mobile first (≤700px) ── */
+        .hero-video {
+          left: -12%;
+          width: 119%;
+        }
+
+        .hero-scrim {
+          display: none;
+        }
+
+        .hero-h1 {
+          font-family: 'Quantico', 'Arial Narrow', sans-serif;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.01em;
+          line-height: 0.98;
+          color: #2b3033;
+          margin: 0;
+          margin-top: 300px;
+          padding: 0 20px 28px 20px;
+          font-size: clamp(32px, 9vw, 56px);
+        }
+
+        .hero-indent {
+          /* No indent on mobile */
+          padding-left: 0;
+        }
+
+        .hero-accent {
+          color: ${ACCENT};
+        }
+
+        .hero-cta-wrap {
+          padding: 0 20px 36px 20px;
+        }
+
+        /* ── Desktop (>700px) ── */
+        @media (min-width: 701px) {
+          .hero-video {
+            left: auto;
+            right: -20%;
+            width: 99%;
+          }
+
+          .hero-scrim {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(
+              90deg,
+              #F2F1F0 0%,
+              #F2F1F0 55%,
+              rgba(242,241,240,0.85) 78%,
+              rgba(242,241,240,0) 100%
+            );
+            pointer-events: none;
+            z-index: 1;
+          }
+
+          .hero-h1 {
+            margin-top: 0;
+            padding: min(clamp(40px,9vw,120px),9vh) 20px min(clamp(24px,4vw,44px),5vh) clamp(20px,9vw,118px);
+            font-size: min(clamp(34px,7.6vw,80px), 9.2vh);
+          }
+
+          .hero-indent {
+            padding-left: min(238px, 28vw);
+          }
+
+          .hero-cta-wrap {
+            padding-left: calc(clamp(20px,9vw,118px) + min(238px, 28vw));
+            padding-bottom: min(clamp(36px,6vw,80px), 7vh);
+            padding-right: 20px;
           }
         }
       `}</style>

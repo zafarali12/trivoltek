@@ -82,8 +82,23 @@ section, header, footer, main {
 }
 
 ::selection {
-  background: var(--color-secondary);
-  color: var(--color-primary);
+  background: #15BCDF;
+  color: #1a1c1e;
+}
+
+/* Touch: prevent 300ms delay on tap targets */
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Prevent iOS tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Quantico utility token */
+:root {
+  --font-quantico: 'Quantico', 'Arial Narrow', sans-serif;
 }
 
 /* Custom Scrollbar */
@@ -98,7 +113,7 @@ section, header, footer, main {
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-secondary);
+  background: #15BCDF;
 }
 
 .container-stitch {

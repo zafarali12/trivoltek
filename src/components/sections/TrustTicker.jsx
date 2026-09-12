@@ -1,42 +1,60 @@
 import React from "react";
 
+const ACCENT = "#15BCDF";
+const BG = "#F7F6F8";
+const BG2 = "#EEEDF0";
+
 export default function TrustTicker() {
   const partners = [
-    { name: "AXION.IO", icon: "memory" },
-    { name: "NEXUS_GRID", icon: "cloud_done" },
-    { name: "VALENCE", icon: "hub" },
-    { name: "CORESEC", icon: "shield_lock" },
-    { name: "DATALOGIX", icon: "database" },
-    { name: "STRATA-9", icon: "speed" },
-    { name: "SYNAPSE_AI", icon: "neurology" },
-    { name: "QUANTUM_FLOW", icon: "timeline" },
+    { name: "AXION.IO" },
+    { name: "NEXUS_GRID" },
+    { name: "VALENCE" },
+    { name: "CORESEC" },
+    { name: "DATALOGIX" },
+    { name: "STRATA-9" },
+    { name: "SYNAPSE_AI" },
+    { name: "QUANTUM_FLOW" },
   ];
 
-  // Duplicate list to create a seamless infinite loop
   const tickerItems = [...partners, ...partners];
 
   return (
     <section
       style={{
         width: "100%",
-        backgroundColor: "var(--color-surface-container-low)",
-        padding: "24px 0",
-        boxShadow: "inset 0 1px 4px rgba(0,0,0,0.02)",
-        borderTop: "1px solid var(--color-surface-container-high)",
-        borderBottom: "1px solid var(--color-surface-container-high)",
+        backgroundColor: BG,
+        padding: "28px 0",
+        borderTop: `1px solid rgba(21,188,223,0.15)`,
+        borderBottom: `1px solid rgba(21,188,223,0.15)`,
         overflow: "hidden",
         position: "relative",
       }}
     >
-      {/* Left and right fade gradient masks */}
+      {/* label */}
+      <div
+        style={{
+          fontFamily: "'Quantico', 'Arial Narrow', sans-serif",
+          fontSize: 11,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: "0.14em",
+          color: "#6b6f72",
+          textAlign: "center",
+          marginBottom: 16,
+        }}
+      >
+        Trusted by Modern Scaling Enterprises &amp; Fast-Growing Tech Startups
+      </div>
+
+      {/* Left / right fade masks */}
       <div
         style={{
           position: "absolute",
           top: 0,
           left: 0,
-          width: "100px",
+          width: 120,
           height: "100%",
-          background: "linear-gradient(to right, var(--color-surface-container-low), transparent)",
+          background: `linear-gradient(to right, ${BG}, transparent)`,
           zIndex: 2,
           pointerEvents: "none",
         }}
@@ -46,43 +64,22 @@ export default function TrustTicker() {
           position: "absolute",
           top: 0,
           right: 0,
-          width: "100px",
+          width: 120,
           height: "100%",
-          background: "linear-gradient(to left, var(--color-surface-container-low), transparent)",
+          background: `linear-gradient(to left, ${BG}, transparent)`,
           zIndex: 2,
           pointerEvents: "none",
         }}
       />
 
-      <div className="container-stitch" style={{ marginBottom: "12px" }}>
-        <div
-          style={{
-            fontFamily: "var(--font-headline)",
-            fontSize: "11px",
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.12em",
-            color: "var(--color-on-surface-variant)",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-          }}
-        >
-          <span className="material-symbols-outlined" style={{ color: "var(--color-secondary)", fontSize: "16px" }}>
-            verified_user
-          </span>
-          <span>Trusted by Modern Scaling Enterprises &amp; Fast-Growing Tech Startups</span>
-        </div>
-      </div>
-
-      {/* Infinite Smooth Sliding Track */}
+      {/* Scrolling track */}
       <div
         style={{
           display: "flex",
           width: "max-content",
-          animation: "stitchTickerScroll 30s linear infinite",
-          gap: "48px",
-          paddingLeft: "24px",
+          animation: "targoTickerScroll 30s linear infinite",
+          gap: 56,
+          paddingLeft: 24,
         }}
         onMouseEnter={(e) => (e.currentTarget.style.animationPlayState = "paused")}
         onMouseLeave={(e) => (e.currentTarget.style.animationPlayState = "running")}
@@ -93,13 +90,14 @@ export default function TrustTicker() {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "8px",
-              fontFamily: "var(--font-headline)",
-              fontSize: "17px",
+              gap: 10,
+              fontFamily: "'Quantico', 'Arial Narrow', sans-serif",
+              fontSize: 16,
               fontWeight: 700,
-              color: "var(--color-primary)",
-              letterSpacing: "-0.02em",
-              opacity: 0.75,
+              color: "#2b3033",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              opacity: 0.72,
               whiteSpace: "nowrap",
               transition: "opacity 0.2s ease, transform 0.2s ease",
               cursor: "default",
@@ -109,26 +107,30 @@ export default function TrustTicker() {
               e.currentTarget.style.transform = "scale(1.05)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.opacity = "0.75";
+              e.currentTarget.style.opacity = "0.72";
               e.currentTarget.style.transform = "scale(1)";
             }}
           >
-            <span className="material-symbols-outlined" style={{ color: "var(--color-secondary)", fontSize: "20px" }}>
-              {p.icon}
-            </span>
-            <span>{p.name}</span>
+            {/* Diamond bullet */}
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                background: ACCENT,
+                transform: "rotate(45deg)",
+                display: "inline-block",
+                flexShrink: 0,
+              }}
+            />
+            {p.name}
           </div>
         ))}
       </div>
 
       <style>{`
-        @keyframes stitchTickerScroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
+        @keyframes targoTickerScroll {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
       `}</style>
     </section>

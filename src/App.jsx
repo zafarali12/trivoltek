@@ -1,15 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
-import Navbar from "./components/sections/Navbar";
+
+// ─── Above-the-fold: loaded eagerly ───────────────────────────────────────
 import Hero from "./components/sections/Hero";
-import TrustTicker from "./components/sections/TrustTicker";
-import Pillars from "./components/sections/Pillars";
-import TelemetryConsole from "./components/sections/TelemetryConsole";
-import CaseStudy from "./components/sections/CaseStudy";
-import Facilities from "./components/sections/Facilities";
-import ContactCTA from "./components/sections/ContactCTA";
-import Footer from "./components/sections/Footer";
-import KeynoteModal from "./components/ui/KeynoteModal";
+import About from "./components/sections/About";
+
+// ─── Below-the-fold: lazy loaded (code-split, only fetched when needed) ──
+const TrustTicker      = lazy(() => import("./components/sections/TrustTicker"));
+const Pillars          = lazy(() => import("./components/sections/Pillars"));
+const TelemetryConsole = lazy(() => import("./components/sections/TelemetryConsole"));
+const CaseStudy        = lazy(() => import("./components/sections/CaseStudy"));
+const Facilities       = lazy(() => import("./components/sections/Facilities"));
+const ContactCTA       = lazy(() => import("./components/sections/ContactCTA"));
+const Footer           = lazy(() => import("./components/sections/Footer"));
+const KeynoteModal     = lazy(() => import("./components/ui/KeynoteModal"));
+
+// Lightweight skeleton shown while lazy chunks load
+function SectionSkeleton() {
+  return (
+    <div
+      style={{
+        width: "100%",
+        minHeight: 120,
+        backgroundColor: "#F7F6F8",
+        animation: "skelPulse 1.4s ease-in-out infinite",
+      }}
+    />
+  );
+}
 
 export default function App() {
   const [demoModalOpen, setDemoModalOpen] = useState(false);
@@ -21,8 +39,8 @@ export default function App() {
   });
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "var(--color-surface)", display: "flex", flexDirection: "column" }}>
-      {/* Top Scroll Depth Progress Indicator */}
+    <div style={{ margin: 0, backgroundColor: "#F2F1F0", display: "flex", flexDirection: "column" }}>
+      {/* Scroll progress bar */}
       <motion.div
         style={{
           scaleX,
@@ -31,25 +49,57 @@ export default function App() {
           left: 0,
           right: 0,
           height: "3px",
-          backgroundColor: "#20B2AA",
+          backgroundColor: "#15BCDF",
           transformOrigin: "0%",
           zIndex: 100,
-          boxShadow: "0 0 10px rgba(32, 178, 170, 0.6)",
+          boxShadow: "0 0 10px rgba(21, 188, 223, 0.6)",
+          willChange: "transform",
         }}
       />
 
-      <Navbar onOpenDemo={() => setDemoModalOpen(true)} />
+      {/* ── Above fold (eager) ──────────────────────────────── */}
+      <Hero onOpenDemo={() => setDemoModalOpen(true)} />
+      <About />
+
+      {/* ── Below fold (lazy + Suspense) ────────────────────── */}
       <main style={{ flex: 1, width: "100%" }}>
-        <Hero onOpenDemo={() => setDemoModalOpen(true)} />
-        <TrustTicker />
-        <Pillars />
-        <TelemetryConsole />
-        <CaseStudy />
-        <Facilities />
-        <ContactCTA />
+        <Suspense fallback={<SectionSkeleton />}>
+          <TrustTicker />
+        </Suspense>
+        <Suspense fallback={<SectionSkeleton />}>
+          <Pillars />
+        </Suspense>
+        <Suspense fallback={<SectionSkeleton />}>
+          <TelemetryConsole />
+        </Suspense>
+        <Suspense fallback={<SectionSkeleton />}>
+          <CaseStudy />
+        </Suspense>
+        <Suspense fallback={<SectionSkeleton />}>
+          <Facilities />
+        </Suspense>
+        <Suspense fallback={<SectionSkeleton />}>
+          <ContactCTA />
+        </Suspense>
       </main>
-      <Footer />
-      <KeynoteModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} />
+
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
+
+      {/* Modal — only rendered when open */}
+      {demoModalOpen && (
+        <Suspense fallback={null}>
+          <KeynoteModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} />
+        </Suspense>
+      )}
+
+      <style>{`
+        @keyframes skelPulse {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.55; }
+        }
+      `}</style>
     </div>
   );
 }
